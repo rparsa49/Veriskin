@@ -1,0 +1,18 @@
+# Virtual environment
+venv/
+selfie-env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Uploads (user selfies)
+samples/
+
+# Local SQLite database
+*.db
+
+# MacOS system files
+.DS_Store

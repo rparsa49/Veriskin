@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        function processImage(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById("mySelfie");
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("selfieField").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            const formdata = new FormData();
+            formdata.append("file", fileInput.files[0]);
+
+            // Send post request to the server
+            fetch("http://127.0.0.1:8000/upload-selfie", {
+                method: "POST",
+                body: formdata,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+
+                // Clear previous colors
+                const colorContainer = document.getElementById("colorContainer");
+                colorContainer.innerHTML = "";
+
+                // Display all dominant colors
+                data.dominant_colors.forEach(color => {
+                    const colorDiv = document.createElement("div");
+                    colorDiv.style.width = "50px";
+                    colorDiv.style.height = "50px";
+                    colorDiv.style.display = "inline-block";
+                    colorDiv.style.margin = "5px";
+                    colorDiv.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                    colorContainer.appendChild(colorDiv);
+                });
+
+                // Display dominant color
+                const dominantColorDiv = document.getElementById("dominantColor");
+                dominantColorDiv.style.width = "50px";
+                dominantColorDiv.style.height = "50px";
+                dominantColorDiv.style.display = "inline-block";
+                dominantColorDiv.style.margin = "5px";
+                dominantColorDiv.style.backgroundColor = `rgb(${data.dominant_color[0]}, ${data.dominant_color[1]}, ${data.dominant_color[2]})`;
+
+                // Display brightness
+                document.getElementById("brightnessValue").innerText = `Brightness: ${data.brightness.toFixed(2)}`;
+
+                // Display skin tone and undertone
+                document.getElementById("skinTone").innerText = `Skin Tone: ${data.skin_tone}`;
+                document.getElementById("undertone").innerText = `Undertone: ${data.undertone}`;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1> Upload Selfie </h1>
+    <img id="selfieField" width="300" alt="Uploaded Selfie">
+
+    <form onsubmit="processImage(event); return false;">
+        <label for="mySelfie">Upload a Selfie: </label>
+        <input type="file" id="mySelfie" name="mySelfie" accept="image/*">
+        <input type="submit" value="Upload">
+    </form>
+
+    <h2>Dominant Colors:</h2>
+    <div id="colorContainer"></div>
+
+    <h2>Most Dominant Color:</h2>
+    <div id="dominantColor"></div>
+
+    <h2>Analysis:</h2>
+    <p id="brightnessValue"></p>
+    <p id="skinTone"></p>
+    <p id="undertone"></p>
+</body>
+</html>
