@@ -1,4 +1,4 @@
-# Foundation Tone Finder 🎨✨
+# Veriskin 🎨✨
 
 A full-stack web application that analyzes a user's uploaded selfie to detect dominant skin tones and predict their ideal foundation match.  
 The application also provides an interactive tool to input preferences like coverage, finish, allergies, and format, with personalized foundation product recommendations based on a growing database.
